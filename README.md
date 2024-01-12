@@ -2,7 +2,7 @@
 
 AI Chatbots are a bit weird. When a user sends a message, its content is displayed instantaneously. In contrast, the chatbot's response requires an API request to be processed before any reply is displayed.
 
-This inbalance can be a bit confusing to work with. Finding a way to handle both sync and async messages in a similar way is trivial. Thankfully, with [Suspense](https://react.dev/reference/react/Suspense) we can do it with ease.
+This imbalance can be a bit confusing to work with. Finding a way to handle both sync and async messages in a similar way is trivial. Thankfully, with [Suspense](https://react.dev/reference/react/Suspense) we can do it with ease.
 
 > The solution I'm proposing depends on some features that have not been released on a stable version of React yet. Use at your own risk.
 
@@ -175,7 +175,7 @@ function ErrorRenderer({ error }) {
 
 And that's it! You can check the full code [here](https://github.com/fibonacid/react-suspence-chat-app/blob/main/src/App.tsx).
 
-## Bonus: Streaming
+---
 
 This approach works with streaming as well. I can't speak for performance or potential leaks, but after some brief testing I didn't notice any issues.
 The idea is to pass a `ReadbleStream` to the `Suspense` fallback element and render incoming chunks as they arrive.
