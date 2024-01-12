@@ -175,7 +175,9 @@ function ErrorRenderer({ error }) {
 
 And that's it! You can check the full code [here](https://github.com/fibonacid/react-suspence-chat-app/blob/main/src/App.tsx).
 
-## HTTP Streaming 
+## Bonus: Streaming
 
-If you need to support streaming, I got you covered. You can check the code
-[here](https://github.com/fibonacid/react-suspence-chat-app/blob/main/src/Streaming.tsx).
+This approach works with streaming as well. I can't speak for performance or potential leaks, but after some brief testing I didn't notice any issues.
+The idea is to pass a `ReadbleStream` to the `Suspense` fallback element and render incoming chunks as they arrive.
+
+You can check the streaming version of the app at this [link](https://github.com/fibonacid/react-suspence-chat-app/blob/main/src/Streaming.tsx).
