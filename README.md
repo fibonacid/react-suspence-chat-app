@@ -1,6 +1,12 @@
 # Creating a LLM chatbot with React Suspense
 
-AI Chatbots are a bit weird. When a user submits a message, the user's `message` needs to be presented right away, while the bot's `message` needs to be created asynchronously. This is a perfect use case for [Suspense](https://react.dev/reference/react/Suspense).
+AI Chatbots are a bit weird. When a user sends a message, the   message can be created right away, while the bot's response needs to wait for the response to come back from the API.
+
+Structuring the app to handle both sync and async messages is trivial. Thankfully, with [Suspense](https://react.dev/reference/react/Suspense) we can do it pretty easily.
+
+Before we dive too deep I should mention that the solution I'm proposing depends on some features that have not been released on a stable version of React yet.
+
+---
 
 Let's start by defining the `Message` type:
 
