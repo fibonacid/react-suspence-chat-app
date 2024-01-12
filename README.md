@@ -174,3 +174,8 @@ function ErrorRenderer({ error }) {
 ```
 
 And that's it! You can check the full code [here](https://github.com/fibonacid/react-suspence-chat-app/blob/main/src/App.tsx).
+
+## HTTP Streaming 
+
+If you need to support streaming, I got you covered. You can check the code
+[here](https://github.com/fibonacid/react-suspence-chat-app/blob/main/src/Streaming.tsx).

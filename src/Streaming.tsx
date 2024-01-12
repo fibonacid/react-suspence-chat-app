@@ -80,25 +80,6 @@ export default function App() {
   );
 }
 
-async function readFromStream(
-  stream: ReadableStream,
-  onData: (chunk: unknown) => void
-) {
-  const reader = stream.getReader();
-  try {
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      onData(value);
-    }
-  } catch (e) {
-    console.error("Stream reading error:", e);
-  } finally {
-    reader.releaseLock();
-  }
-}
-
 function MessageLoading({ stream }: { stream?: ReadableStream }) {
   const [content, setContent] = useState("");
 
@@ -151,4 +132,23 @@ function fetchStreamingResponse(message: string) {
       controller.close();
     },
   });
+}
+
+async function readFromStream(
+  stream: ReadableStream,
+  onData: (chunk: unknown) => void
+) {
+  const reader = stream.getReader();
+  try {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      onData(value);
+    }
+  } catch (e) {
+    console.error("Stream reading error:", e);
+  } finally {
+    reader.releaseLock();
+  }
 }
