@@ -105,7 +105,7 @@ Now let's see how we can render the messages. In our JSX we render all the messa
 
 ```tsx
 function ChatBot() {
-  const [messages, setMessages] = useState<Messages[]>([]);
+  const [messages, setMessages] = useState<Messages>([]);
   // ...
   return (
     // ...
