@@ -11,16 +11,15 @@ import {
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 
 type Message = {
+  id: string;
   from: "user" | "assistant";
-  messageId: string;
-  sessionId: string;
   content: string;
 };
 
-type LazyMessage = Promise<Message>;
+type Messages = Array<Message | Promise<Message>>;
 
 export default function App() {
-  const [messages, setMessages] = useState<(Message | LazyMessage)[]>([]);
+  const [messages, setMessages] = useState<Messages>([]);
   const [input, setInput] = useState("");
 
   const handleInputChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
@@ -32,57 +31,42 @@ export default function App() {
     (e) => {
       e.preventDefault();
       const question: Message = {
+        id: Date.now().toString(),
         from: "user",
-        messageId: "1",
-        sessionId: "1",
         content: input,
       };
-      const response: LazyMessage = fetchResponse(input).then((response) => {
-        return {
+      const response: Promise<Message> = fetchResponse(input).then(
+        (response) => ({
+          id: Date.now().toString(),
           from: "assistant",
           content: response,
-          sessionId: "1",
-          messageId: "2",
-        };
-      });
+        })
+      );
       setMessages((messages) => [...messages, question, response]);
     },
     [setMessages, input]
   );
 
   return (
-    <div>
+    <>
       <form onSubmit={handleSubmit}>
         <input type="text" value={input} onChange={handleInputChange} />
         <button type="submit">Send</button>
       </form>
       <div role="log">
         {messages.map((message, index) => (
-          <ErrorBoundary key={index} fallbackRender={MessageError}>
-            <Suspense fallback={<MessageLoading />} key={index}>
-              <MessageComponent message={message} />
+          <ErrorBoundary key={index} fallbackRender={ErrorRenderer}>
+            <Suspense fallback="Loading...">
+              <MessageRenderer message={message} />
             </Suspense>
           </ErrorBoundary>
         ))}
       </div>
-    </div>
+    </>
   );
 }
 
-function MessageError({ error }: FallbackProps) {
-  return (
-    <p>
-      <span>Error:</span>
-      {error instanceof Error ? error.message : "Unknown error"}
-    </p>
-  );
-}
-
-function MessageLoading() {
-  return <p>Loading...</p>;
-}
-
-function MessageComponent({ message }: { message: Message | LazyMessage }) {
+function MessageRenderer({ message }: { message: Message | Promise<Message> }) {
   const { from, content } = message instanceof Promise ? use(message) : message;
   return (
     <p>
@@ -92,12 +76,19 @@ function MessageComponent({ message }: { message: Message | LazyMessage }) {
   );
 }
 
-async function fetchResponse(question: string): Promise<string> {
-  return new Promise((resolve, reject) =>
+function ErrorRenderer({ error }: FallbackProps) {
+  return (
+    <div role="alert">
+      <p>{error instanceof Error ? error.message : "Something went wrong"}</p>
+    </div>
+  );
+}
+
+async function fetchResponse(message: string): Promise<string> {
+  return new Promise((resolve) =>
     setTimeout(() => {
-      const random = Math.random();
-      if (random < 0.5) return reject(new Error("Something went wrong"));
-      resolve(question); // parrot
-    }, 5000)
+      console.log("Message sent:", message);
+      resolve("I don't know");
+    }, 1000)
   );
 }
