@@ -1,6 +1,6 @@
-# Using React's latest feature to create an AI Chatbot
+# Creating a LLM chatbot with React Suspense
 
-AI Chatbots are a bit weird. When a user submits a message, a structure called `Message` needs to be created right away, while another one needs to be created after the bot has responded.
+AI Chatbots are a bit weird. When a user submits a message, the user's `message` needs to be presented right away, while the bot's `message` needs to be created asynchronously. This is a perfect use case for [Suspense](https://react.dev/reference/react/Suspense).
 
 Let's start by defining the `Message` type:
 
@@ -53,7 +53,7 @@ const userMessage: Message = {
 };
 ```
 
-*Step 2* is a bit more complicated. We need to define a function that retrieves the bot's response asynchronously. We can use `setTimeout` to simulate a network request:
+**Step 2** is a bit more complicated. We need to define a function that retrieves the bot's response asynchronously. We can use `setTimeout` to simulate a network request:
 
 ```tsx
 function fetchResponse(question: string): Promise<string> {
@@ -96,7 +96,7 @@ wrapped in a `Suspense` component:
 </div>
 ```
 
-The `MessageRenderer` component receives a `message` prop that can be an actual message (`Message`) or a promise (`LazyMessage`). When the message is a promise, we need to inform the `Suspense` component that it should wait for the promise to resolve before rendering the message. We can do that by wrapping the `message` prop with the `use` hook.
+The `MessageRenderer` component receives a prop called `message` that can be an actual message or a promise that resolves to a message. When the message is a promise, we need to inform the `Suspense` component that it should wait for the promise to resolve before rendering the message. We can do that by wrapping the `message` prop with the [`use`](https://react.dev/reference/react/use) hook.
 
 > As of January 2024 this hook is only available in the canary version of React. Refer to the [docs](https://react.dev/reference/react/use) to understand how to use it.
 
@@ -118,8 +118,6 @@ function MessageRenderer({ message }: { message: Message | Promise<Message> }) {
 
 One thing to note here is that, contrary to regular hooks, `use` can be called conditionally.
 
----
-
 Now, let's finish this by adding error handling. To do it you simply need to wrap the `Suspense` component with an `ErrorBoundary`:
 
 ```tsx
@@ -129,5 +127,7 @@ import { ErrorBoundary } from "react-error-boundary";
   <Suspense key={index} fallback="Loading...">
     <MessageRenderer message={message} />
   </Suspense>
-</ErrorBoundary>;
+</ErrorBoundary>
 ```
+
+And that's it! You can check the full code [here](https://github.com/fibonacid/react-suspence-chat-app/blob/main/src/App.tsx).
